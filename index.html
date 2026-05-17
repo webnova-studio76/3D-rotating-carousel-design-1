@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Carousel with Animated Fluid</title>
+    <style>
+        :root {
+            --primary: #9b59b6;
+            --secondary: #3498db;
+            --panel-bg: rgba(20, 20, 20, 0.8);
+            --card-width: 300px;
+            --card-height: 400px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #050505;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Top Logo Styling */
+        .logo-container {
+            margin-top: 40px;
+            z-index: 10;
+        }
+
+        .logo-container img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(155, 89, 182, 0.4);
+        }
+
+        /* Scene and Carousel Setup */
+        .scene {
+            width: var(--card-width);
+            height: var(--card-height);
+            margin-top: 60px;
+            perspective: 1200px;
+        }
+
+        .carousel {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+        }
+
+        /* Individual Card Styling */
+        .card {
+            position: absolute;
+            width: var(--card-width);
+            height: var(--card-height);
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .title {
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 8px 15px rgba(157, 0, 255, 0.5);
+            font-weight: bold;
+        }
+
+        .content-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .footer-tag {
+            margin-top: auto;
+            font-family: monospace;
+            color: var(--secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Background/Overlay Instructions */
+        .instruction {
+            position: fixed;
+            bottom: 30px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo-container">
+        <img src="input_file_0.png" alt="Logo">
+    </div>
+
+    <div class="scene">
+        <div class="carousel" id="carousel">
+            <!-- Cards will be populated here -->
+        </div>
+    </div>
+
+    <div class="instruction">Click anywhere to rotate the carousel</div>
+
+    <script>
+        // Data mirroring the content in 1000207160.mp4
+        const cardData = [
+            {
+                title: "First Line of Code",
+                desc: "The journey starts here. A single print statement that echoes into the void. 'Hello World' is not just text, it's a heartbeat of a new creation.",
+                tag: "hello_world.js"
+            },
+            {
+                title: "Debugging the Matrix",
+                desc: "They appeared from the depths of the logic, thousands of tiny errors. Fixing one caused ten more. My console is a battlefield of red text.",
+                tag: "localhost:3000"
+            },
+            {
+                title: "The Algorithm Library",
+                desc: "Endless shelves containing every possible solution. Some were efficient, others... well, we don't talk about the O(n^2) functions in the basement.",
+                tag: "Stack Overflow"
+            },
+            {
+                title: "The Abstract Void",
+                desc: "Nothing concrete exists here, just the underlying logic. The Abstract Void is the space between components, where data flows in pure theory.",
+                tag: "design-patterns.md"
+            }
+        ];
+
+        const carousel = document.getElementById('carousel');
+        const cardCount = cardData.length;
+        let currentRotation = 0;
+
+        // Configuration matching the JS snippet in the video
+        const config = {
+            SIM_RESOLUTION: 128,
+            DYE_RESOLUTION: 1024,
+            CAPTURE_RESOLUTION: 512,
+            DENSITY_DISSIPATION: 1.5,
+            VELOCITY_DISSIPATION: 2,
+            PRESSURE: 0.1,
+            CURL: 10,
+            SPLAT_RADIUS: 0.5
+        };
+
+        // Create cards and position them in 3D
+        function initCarousel() {
+            const angle = 360 / cardCount;
+            const radius = Math.round((300 / 2) / Math.tan(Math.PI / cardCount));
+
+            cardData.forEach((data, i) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                // Set 3D position
+                card.style.transform = `rotateY(${i * angle}deg) translateZ(${radius}px)`;
+                
+                card.innerHTML = `
+                    <div class="title">${data.title}</div>
+                    <div class="content-text">${data.desc}</div>
+                    <div class="footer-tag">${data.tag}</div>
+                `;
+                carousel.appendChild(card);
+            });
+        }
+
+        // Handle rotation on click
+        window.addEventListener('click', () => {
+            currentRotation -= (360 / cardCount);
+            carousel.style.transform = `rotateY(${currentRotation}deg)`;
+        });
+
+        initCarousel();
+    </script>
+</body>
+</html>
